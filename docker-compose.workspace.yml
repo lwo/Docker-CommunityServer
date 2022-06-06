@@ -13,7 +13,7 @@ services:
     volumes:
      - ./config/mysql/conf.d:/etc/mysql/conf.d
      - ./config/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-     - /data/mysql_data:/var/lib/mysql
+     - mysql_data:/var/lib/mysql
   onlyoffice-community-server:
     container_name: onlyoffice-community-server
     image: onlyoffice/communityserver:12.0.0.1726
@@ -37,7 +37,7 @@ services:
      - MYSQL_SERVER_PASS=onlyoffice_pass
      - MAIL_SERVER_API_PORT=8081
      - MAIL_SERVER_API_HOST=onlyoffice-mail-server
-     - MAIL_SERVER_DB_HOST=onlyoffice-mysql-server
+     #- MAIL_SERVER_DB_HOST=onlyoffice-mysql-server
      - MAIL_SERVER_DB_PORT=3306
      - MAIL_SERVER_DB_NAME=onlyoffice_mailserver
      - MAIL_SERVER_DB_USER=onlyoffice_mailserver_user
@@ -55,10 +55,10 @@ services:
     restart: always
     privileged: true
     volumes:
-     - /data/community_data:/var/www/onlyoffice/Data
-     - /data/community_log:/var/log/onlyoffice
-     - /data/community_letsencrypt:/etc/letsencrypt
-     - /data/document_data:/var/www/onlyoffice/DocumentServerData
+     - community_data:/var/www/onlyoffice/Data
+     - community_log:/var/log/onlyoffice
+     - community_letsencrypt:/etc/letsencrypt
+     - document_data:/var/www/onlyoffice/DocumentServerData
      - /sys/fs/cgroup:/sys/fs/cgroup:ro
      - ./certs:/var/www/onlyoffice/Data/certs
   onlyoffice-elasticsearch:
@@ -81,7 +81,7 @@ services:
         soft: 65535
         hard: 65535
     volumes:
-      - /data/es_data:/usr/share/elasticsearch/data
+      - es_data:/usr/share/elasticsearch/data
     expose:
       - "9200"
       - "9300"
@@ -101,36 +101,36 @@ services:
       - '80'
       - '443'
     volumes:
-       - /data/document_data:/var/www/onlyoffice/Data
-       - /data/document_log:/var/log/onlyoffice
+       - document_data:/var/www/onlyoffice/Data
+       - document_log:/var/log/onlyoffice
        - ./document_fonts:/usr/share/fonts/truetype/custom
-       - /data/document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
-  onlyoffice-mail-server:
-    container_name: onlyoffice-mail-server
-    image: onlyoffice/mailserver:1.6.75
-    depends_on:
-      - onlyoffice-mysql-server
-    hostname: mail.lucien-van-wouw.nl
-    environment:
-       - MYSQL_SERVER=onlyoffice-mysql-server
-       - MYSQL_SERVER_PORT=3306
-       - MYSQL_ROOT_USER=onlyoffice_mailserver_user
-       - MYSQL_ROOT_PASSWD=onlyoffice_mailserver_user_pass
-       - MYSQL_SERVER_DB_NAME=onlyoffice_mailserver
-    networks:
-      - onlyoffice
-    restart: always
-    privileged: true
-    ports: ['25:25','143:143','587:587']
-    stdin_open: true
-    tty: true
-    expose:
-      - '8081'
-      - '3306'
-    volumes:
-      - /data/mail_data:/var/vmail
-      - /data/mail_certs:/etc/pki/tls/mailserver
-      - /data/mail_log:/var/log
+       - document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
+#  onlyoffice-mail-server:
+#    container_name: onlyoffice-mail-server
+#    image: onlyoffice/mailserver:1.6.75
+#    depends_on:
+#      - onlyoffice-mysql-server
+#    hostname: mail.lucien-van-wouw.nl
+#    environment:
+#       - MYSQL_SERVER=onlyoffice-mysql-server
+#       - MYSQL_SERVER_PORT=3306
+#       - MYSQL_ROOT_USER=onlyoffice_mailserver_user
+#       - MYSQL_ROOT_PASSWD=onlyoffice_mailserver_user_pass
+#       - MYSQL_SERVER_DB_NAME=onlyoffice_mailserver
+#    networks:
+#      - onlyoffice
+#    restart: always
+#    privileged: true
+#    ports: ['25:25','143:143','587:587']
+#    stdin_open: true
+#    tty: true
+#    expose:
+#      - '8081'
+#      - '3306'
+#    volumes:
+#      - mail_data:/var/vmail
+#      - mail_certs:/etc/pki/tls/mailserver
+#      - mail_log:/var/log
   onlyoffice-control-panel:
     container_name: onlyoffice-control-panel
     depends_on:
@@ -146,8 +146,8 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /data/controlpanel_data:/var/www/onlyoffice/Data
-      - /data/controlpanel_log:/var/log/onlyoffice
+      - controlpanel_data:/var/www/onlyoffice/Data
+      - controlpanel_log:/var/log/onlyoffice
     networks:
       - onlyoffice
     stdin_open: true
@@ -155,3 +155,19 @@ services:
 networks:
   onlyoffice:
     driver: 'bridge'
+volumes:
+  mail_data:
+  mail_certs:
+  mail_log:
+  mail_mysql:
+  document_data:
+  document_log:
+  document_forgotten:
+  community_mysql:
+  community_data:
+  community_log:
+  community_letsencrypt:
+  controlpanel_data:
+  controlpanel_log:
+  mysql_data:
+  es_data:
