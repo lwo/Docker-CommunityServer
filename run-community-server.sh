@@ -90,6 +90,12 @@ fi
 
 chmod -R 444 ${APP_PRIVATE_DATA_DIR}
 
+if cat /proc/1/cgroup | grep -qE "docker|lxc|kubepods|libpod"; then
+        DOCKER_ENABLED=true;
+else
+	DOCKER_ENABLED=false;
+fi
+
 if [ ! -d "$NGINX_CONF_DIR" ]; then
    mkdir -p $NGINX_CONF_DIR;
 fi
