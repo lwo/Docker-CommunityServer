@@ -17,6 +17,7 @@ services:
   onlyoffice-community-server:
     container_name: onlyoffice-community-server
     image: onlyoffice/communityserver:12.0.0.1726
+    command: 'source /app/run-community-server.sh && exec /lib/systemd/systemd'
     depends_on:
      - onlyoffice-mysql-server
      - onlyoffice-document-server
