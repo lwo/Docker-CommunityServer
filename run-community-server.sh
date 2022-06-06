@@ -44,7 +44,7 @@ CreateAuthToken() {
         local machinekey=$(echo -n "$2");
         local a=1
         local LIMIT=10
-        
+
         while [ "$a" -le $LIMIT ]
         do
           local now=$(date +"%Y%m%d%H%M%S");
@@ -61,7 +61,7 @@ CreateAuthToken() {
 
           sleep 1s;
         done
-        
+
         exit 1;
 }
 
@@ -89,12 +89,6 @@ fi
 
 
 chmod -R 444 ${APP_PRIVATE_DATA_DIR}
-
-if cat /proc/1/cgroup | grep -qE "docker|lxc|kubepods|libpod"; then
-        DOCKER_ENABLED=true;
-else
-	DOCKER_ENABLED=false;
-fi
 
 if [ ! -d "$NGINX_CONF_DIR" ]; then
    mkdir -p $NGINX_CONF_DIR;
@@ -252,10 +246,10 @@ fi
 
 # if [ "${APP_MONOSERVE_COUNT}" -eq "2" ] ; then
 #	KERNER_CPU=$(nproc);
-	
+
 #	if [ "${KERNER_CPU}" -gt "${APP_MONOSERVE_COUNT}" ]; then
 #		APP_MONOSERVE_COUNT=${KERNER_CPU};
-#	fi	
+#	fi
 # fi
 
 if [ ! -f /proc/net/if_inet6 ]; then
@@ -535,7 +529,7 @@ mysql_check_connection() {
 	if [ ${LOG_DEBUG} ]; then
 		log_debug "Mysql check connection for ${MYSQL_SERVER_HOST}";
 	fi
-	
+
 
 	while ! mysqladmin ping -h ${MYSQL_SERVER_HOST} -P ${MYSQL_SERVER_PORT} -u ${MYSQL_SERVER_USER} --password=${MYSQL_SERVER_PASS} --silent; do
     		sleep 1
@@ -572,7 +566,7 @@ if [ "${MYSQL_SERVER_EXTERNAL}" == "false" ]; then
 		else
 			mysql_upgrade --password=${MYSQL_SERVER_ROOT_PASSWORD};
 		fi
-	
+
 		service mysql restart;
 	fi
 
@@ -784,7 +778,7 @@ if [ "${MAIL_SERVER_ENABLED}" == "true" ]; then
         if [[ "$?" -eq "0" ]] && [[ -n ${MAIL_SERVER_HOSTNAME} ]]; then
             break;
         fi
-        
+
 	sleep 10;
 
 	if [ ${LOG_DEBUG} ]; then
@@ -845,7 +839,7 @@ END
         if [ ${LOG_DEBUG} ]; then
             log_debug "id2 is '${id2}'";
         fi
-        
+
     else
         id1=$(mysql_scalar_exec "select imap_settings_id from mail_server_server where mx_record='${MAIL_SERVER_HOSTNAME}' limit 1");
         if [ ${LOG_DEBUG} ]; then
