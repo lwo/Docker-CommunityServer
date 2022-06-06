@@ -25,9 +25,8 @@ services:
     environment:
      - ONLYOFFICE_CORE_MACHINEKEY=core_secret
      - CONTROL_PANEL_PORT_80_TCP=80
-     - CONTROL_PANEL_PORT_80_TCP_ADDR=pddk-admin.lucien-van-wouw.nl
-     - DOCKER_ENABLED=true
-     - DOCUMENT_SERVER_PORT_80_TCP_ADDR=pddk.lucien-van-wouw.nl
+     - CONTROL_PANEL_PORT_80_TCP_ADDR=onlyoffice-control-panel
+     - DOCUMENT_SERVER_PORT_80_TCP_ADDR=onlyoffice-document-server
      - DOCUMENT_SERVER_JWT_ENABLED=true
      - DOCUMENT_SERVER_JWT_SECRET=jwt_secret
      - DOCUMENT_SERVER_JWT_HEADER=AuthorizationJwt
