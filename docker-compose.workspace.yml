@@ -56,7 +56,7 @@ services:
     restart: always
     privileged: true
     volumes:
-     - ./run-community-server.sh /app/run-community-server.sh:ro
+     - ./run-community-server.sh:/app/run-community-server.sh:ro
      - community_data:/var/www/onlyoffice/Data
      - community_log:/var/log/onlyoffice
      - community_letsencrypt:/etc/letsencrypt
