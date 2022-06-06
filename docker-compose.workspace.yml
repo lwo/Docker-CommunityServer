@@ -13,10 +13,10 @@ services:
     volumes:
      - ./config/mysql/conf.d:/etc/mysql/conf.d
      - ./config/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-     - mysql_data:/var/lib/mysql
+     - /data/mysql_data:/var/lib/mysql
   onlyoffice-community-server:
     container_name: onlyoffice-community-server
-    image: onlyoffice/communityserver:11.5.4.1582
+    image: onlyoffice/communityserver:12.0.0.1726
     depends_on:
      - onlyoffice-mysql-server
      - onlyoffice-document-server
@@ -55,10 +55,10 @@ services:
     restart: always
     privileged: true
     volumes:
-     - community_data:/var/www/onlyoffice/Data
-     - community_log:/var/log/onlyoffice
-     - community_letsencrypt:/etc/letsencrypt
-     - document_data:/var/www/onlyoffice/DocumentServerData
+     - /data/community_data:/var/www/onlyoffice/Data
+     - /data/community_log:/var/log/onlyoffice
+     - /data/community_letsencrypt:/etc/letsencrypt
+     - /data/document_data:/var/www/onlyoffice/DocumentServerData
      - /sys/fs/cgroup:/sys/fs/cgroup:ro
      - ./certs:/var/www/onlyoffice/Data/certs
   onlyoffice-elasticsearch:
@@ -81,13 +81,13 @@ services:
         soft: 65535
         hard: 65535
     volumes:
-      - es_data:/usr/share/elasticsearch/data
+      - /data/es_data:/usr/share/elasticsearch/data
     expose:
       - "9200"
       - "9300"
   onlyoffice-document-server:
     container_name: onlyoffice-document-server
-    image: onlyoffice/documentserver:6.4.2.6
+    image: onlyoffice/documentserver:7.1.1.23
     stdin_open: true
     tty: true
     restart: always
@@ -101,13 +101,13 @@ services:
       - '80'
       - '443'
     volumes:
-       - document_data:/var/www/onlyoffice/Data
-       - document_log:/var/log/onlyoffice
+       - /data/document_data:/var/www/onlyoffice/Data
+       - /data/document_log:/var/log/onlyoffice
        - ./document_fonts:/usr/share/fonts/truetype/custom
-       - document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
+       - /data/document_forgotten:/var/lib/onlyoffice/documentserver/App_Data/cache/files/forgotten
   onlyoffice-mail-server:
     container_name: onlyoffice-mail-server
-    image: onlyoffice/mailserver:latest
+    image: onlyoffice/mailserver:1.6.75
     depends_on:
       - onlyoffice-mysql-server
     hostname: ${MAIL_SERVER_HOSTNAME}
@@ -128,16 +128,16 @@ services:
       - '8081'
       - '3306'
     volumes:
-      - mail_data:/var/vmail
-      - mail_certs:/etc/pki/tls/mailserver
-      - mail_log:/var/log
+      - /data/mail_data:/var/vmail
+      - /data/mail_certs:/etc/pki/tls/mailserver
+      - /data/mail_log:/var/log
   onlyoffice-control-panel:
     container_name: onlyoffice-control-panel
     depends_on:
      - onlyoffice-document-server
      - onlyoffice-mail-server
      - onlyoffice-community-server
-    image: onlyoffice/controlpanel:3.0.2.395
+    image: onlyoffice/controlpanel:3.1.0.460
     environment:
      - ONLYOFFICE_CORE_MACHINEKEY=core_secret
     expose:
@@ -146,8 +146,8 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - controlpanel_data:/var/www/onlyoffice/Data
-      - controlpanel_log:/var/log/onlyoffice
+      - /data/controlpanel_data:/var/www/onlyoffice/Data
+      - /data/controlpanel_log:/var/log/onlyoffice
     networks:
       - onlyoffice
     stdin_open: true
@@ -155,19 +155,3 @@ services:
 networks:
   onlyoffice:
     driver: 'bridge'
-volumes:
-  mail_data:
-  mail_certs:
-  mail_log:
-  mail_mysql:
-  document_data:
-  document_log:
-  document_forgotten:
-  community_mysql:
-  community_data:
-  community_log:
-  community_letsencrypt:
-  controlpanel_data:
-  controlpanel_log:
-  mysql_data:
-  es_data:
